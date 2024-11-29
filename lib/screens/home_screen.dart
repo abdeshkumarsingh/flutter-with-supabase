@@ -1,5 +1,5 @@
-import 'package:crud/Database/crud.dart';
-import 'package:crud/Database/database_connection.dart';
+import 'package:crud/services/note.dart';
+import 'package:crud/services/database_connection.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
           //Create note Button
           TextButton(onPressed: (){
-            final newNote = Crud(content: 'Write Something Here', note_name: noteController.text);
+            final newNote = Note(content: 'Write Something Here', note_name: noteController.text);
             database_connection.createNote(newNote);
             Navigator.pop(context);
             noteController.clear();
@@ -62,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   //update note
-  void updateNote(Crud content) {
+  void updateNote(Note content) {
     readNoteController.text = content.content;
     showDialog(context: context,
       builder: (context) => AlertDialog(
@@ -82,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   //delete note
-  void deleteNote(Crud note) {
+  void deleteNote(Note note) {
     database_connection.deleteNote(note);
   }
 
