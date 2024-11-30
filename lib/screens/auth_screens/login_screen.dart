@@ -1,6 +1,8 @@
+import 'package:crud/services/provider/auth_provider.dart';
 import 'package:crud/utils/images.dart';
 import 'package:crud/widgets/auth_textfield/auth_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 
 class LoginScreen extends StatefulWidget {
@@ -21,40 +23,73 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: Padding(
           padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-                padding: EdgeInsets.only(bottom: 50, top: 50, left: 80, right: 80),
-              child: Image.asset(ImagesAssets.kLockPng),
-            ),
-            AuthTextfield(
-              hintText: 'Enter your email',
-              prefixIcon: Icons.mail,
-              controller: _emailController,
-            ),
-            SizedBox(height: 30,),
-            AuthTextfield(
-              hintText: 'Enter your Password',
-              prefixIcon: Icons.mail,
-              controller: _passwordController,
-              suffix: InkWell(
-                child: const Icon(Icons.remove_red_eye),
-                onTap: (){
-
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(bottom: 70, top: 70, left: 80, right: 80),
+                child: Image.asset(ImagesAssets.kLockPng),
+              ),
+              AuthTextfield(
+                hintText: 'Enter your email',
+                prefixIcon: Icons.mail,
+                controller: _emailController,
+                obscuretext: false,
+              ),
+              const SizedBox(height: 30,),
+              Consumer<AuthProvider>(builder: (context, value, child) => AuthTextfield(
+                hintText: 'Enter your Password',
+                prefixIcon: Icons.key,
+                controller: _passwordController,
+                obscuretext: value.isObfuscated,
+                suffix: InkWell(
+                  child: value.isObfuscated ? Icon(Icons.add_moderator) : Icon(Icons.remove_moderator),
+                  onTap: (){
+                        value.hidePassword();
+                  },
+                ),
+              ),),
+              const SizedBox(height: 20,),
+              Consumer<AuthProvider>(builder: (context, value, child) => TextButton(
+                onPressed: () async {
+                  bool user = await value.logIn(_emailController.text, _passwordController.text);
+                  if(user){
+                    Navigator.pushReplacementNamed(context, '/home');
+                  }
+                  else{
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(value.errorMessage!)));
+                    value.clearError();
+                  }
                 },
+                child: value.isLoading ? CircularProgressIndicator() : Text('Login', style: TextStyle(color: Colors.white),),
+                style: const ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll<Color>(Colors.black),
+                ),
               ),
-            ),
-            SizedBox(height: 20,),
-            TextButton(
-                onPressed: (){},
-                child: Text('Login', style: TextStyle(color: Colors.white),),
-              style: ButtonStyle(
-                backgroundColor: MaterialStatePropertyAll<Color>(Colors.black),
               ),
-            ),
-          ],
-        ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Don\'t have an account?'),
+                  GestureDetector(
+                    child: Text('Sign Up here.', style: TextStyle(color: Colors.blue),),
+                    onTap: (){
+                      Navigator.pushNamed(context, '/signup');
+                    },
+                  )
+                ],
+              ),
+              GestureDetector(
+                child: const Text('Forget Password?', style: TextStyle(color: Colors.blue),),
+                onTap: (){
+                  Navigator.pushNamed(context, '/resetPassword');
+                },
+              )
+            ],
+          ),
+        )
       ),
     );
   }
