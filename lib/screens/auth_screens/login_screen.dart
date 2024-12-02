@@ -76,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   GestureDetector(
                     child: Text('Sign Up here.', style: TextStyle(color: Colors.blue),),
                     onTap: (){
-                      Navigator.pushNamed(context, '/signup');
+                      Navigator.pushReplacementNamed(context, '/signup');
                     },
                   )
                 ],

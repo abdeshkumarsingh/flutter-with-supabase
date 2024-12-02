@@ -52,9 +52,9 @@ class _SignupScreenState extends State<SignupScreen> {
                 const SizedBox(height: 20,),
                 Consumer<AuthProvider>(builder: (context, value, child) => TextButton(
                   onPressed: () async {
-                    bool user = await value.logIn(_emailController.text, _passwordController.text);
+                    bool user = await value.signUp(_emailController.text, _passwordController.text);
                     if(user){
-                      Navigator.pushReplacementNamed(context, '/home');
+                      Navigator.pushReplacementNamed(context, '/login');
                     }
                     else{
                       ScaffoldMessenger.of(context).showSnackBar(

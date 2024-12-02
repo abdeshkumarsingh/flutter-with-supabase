@@ -1,4 +1,4 @@
-import 'note.dart';
+import 'Models/note.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Database_connection {

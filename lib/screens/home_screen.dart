@@ -1,4 +1,5 @@
-import 'package:crud/services/note.dart';
+import 'package:crud/auth/auth_services.dart';
+import 'package:crud/services/Models/note.dart';
 import 'package:crud/services/database_connection.dart';
 import 'package:flutter/material.dart';
 
@@ -10,6 +11,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  final AuthServices authServices = AuthServices();
 
   final database_connection = Database_connection();
   final noteController = TextEditingController();
@@ -90,7 +93,19 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(onPressed: (){createNote();}, child: Icon(Icons.add), backgroundColor: Colors.red,),
-      appBar: AppBar(title: Text('CRUD APP'), centerTitle: true, backgroundColor: Colors.orange,),
+      appBar: AppBar(
+        title: Text(authServices.getCurrentUserEmail().toString()),
+        centerTitle: false,
+        backgroundColor: Colors.orange,
+        actions: [
+          InkWell(
+            onTap: (){
+              authServices.signOut();
+              Navigator.pushReplacementNamed(context, '/login');
+            },
+            child: Icon(Icons.logout),
+          )
+        ],),
       body: StreamBuilder(stream: database_connection.stream, builder: (context, snapshot) {
         //no data in snapshot
         if(!snapshot.hasData){
