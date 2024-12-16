@@ -60,15 +60,15 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       appBar: AppBar(
         title: const Text('Notes'),
-        centerTitle: false,
+        centerTitle: true,
         backgroundColor: Colors.orange,
         actions: [
-          Consumer<UserProfileProvider>(builder: (context, value, child) => InkWell(
-            onTap: () async {
+          Consumer<UserProfileProvider>(builder: (context, value, child) => IconButton(
+            onPressed: () async {
               UserModel userDetails = await value.fetchUser();
               Navigator.push(context, MaterialPageRoute(builder: (context) => UserProfileScreen(user: userDetails),));
             },
-            child: Icon(Icons.person),
+            icon: const Icon(Icons.person),
           ),),
         ],),
       body: Consumer<NoteProvider>(builder: (context, value, child) {
@@ -113,6 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(onPressed: (){
+                          readNoteController.text = note.content;
                           showDialog(
                             context: context,
                             builder: (context) => AlertDialog(

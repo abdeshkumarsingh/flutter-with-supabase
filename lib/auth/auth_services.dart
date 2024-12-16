@@ -27,11 +27,6 @@ Future<void> resetPassword(String email) async{
   await _supabase.auth.resetPasswordForEmail(email);
 }
 
-  //Signout
-Future<void> signOut() async{
-  await _supabase.auth.signOut();
-}
-
   //Fetch current user email
 String? getCurrentUserEmail() {
   final session = _supabase.auth.currentSession;

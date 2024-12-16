@@ -15,6 +15,21 @@ class UserProfileScreen extends StatefulWidget {
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
   final _nameController = TextEditingController();
+  bool _isImageNull = true;
+  
+  @override
+  void initState() {
+    super.initState();
+    isImageNull();
+  }
+  
+  bool isImageNull(){
+    if(widget.user.avatarUrl == null){
+      return true;
+    } else {
+      return false;
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,9 +45,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         actions: [
           Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Icon(Icons.logout),
+            child: Consumer<UserProfileProvider>(builder: (context, value, child) => IconButton(
+              icon: const Icon(Icons.logout),
+              onPressed: (){
+                value.logOut();
+                Navigator.pushNamed(context, '/login');
+              },
+            ),
           ),
-        ]
+          )
+        ],
       ),
       body: Center(
         child: Consumer<UserProfileProvider>(builder: (context, value, child) => Column(
@@ -47,7 +69,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 }
               },
               child: CircleAvatar(
-                backgroundImage: NetworkImage(widget.user.avatarUrl),
+                backgroundImage: _isImageNull ? NetworkImage('https://www.pngplay.com/wp-content/uploads/12/User-Avatar-Profile-PNG-Free-File-Download.png') : NetworkImage(widget.user.avatarUrl),
                 radius: 80,
               ),
             ),

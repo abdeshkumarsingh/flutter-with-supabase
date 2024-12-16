@@ -83,8 +83,11 @@ class UserProfileProvider with ChangeNotifier{
     if(_imagePath == null){
       throw Exception('No Image Uploaded');
     }
-    final imageUrl = await _supabase.storage.from('profile-images').createSignedUrl('public/$userId/$_imagePath', 60);
+    final imageUrl = await _supabase.storage.from('profile-images').createSignedUrl('public/$userId/$_imagePath', 60 * 60 * 24 * 365);
     _imagePath = null;
     return imageUrl;
+  }
+  void logOut(){
+    Supabase.instance.client.auth.signOut();
   }
 }
