@@ -4,6 +4,8 @@ import 'package:crud/screens/auth_screens/resetpwd_screen.dart';
 import 'package:crud/screens/auth_screens/signup_screen.dart';
 import 'package:crud/screens/home_screen.dart';
 import 'package:crud/services/provider/auth_provider.dart';
+import 'package:crud/services/provider/note_provider.dart';
+import 'package:crud/services/provider/user_profile_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -17,6 +19,8 @@ Future<void> main() async {
       MultiProvider(
           providers: [
             ChangeNotifierProvider(create: (_) => AuthProvider()),
+            ChangeNotifierProvider(create: (_) => UserProfileProvider()),
+            ChangeNotifierProvider(create: (_) => NoteProvider()),
   ],
         child: const Crudapp(),
       ),

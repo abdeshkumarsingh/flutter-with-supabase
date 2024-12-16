@@ -1,6 +1,7 @@
 import 'package:crud/auth/auth_services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AuthProvider with ChangeNotifier{
   final AuthServices _authServices = AuthServices();
@@ -8,10 +9,12 @@ class AuthProvider with ChangeNotifier{
   bool _isLoading = false;
   String? _errorMessage;
   bool _isObfuscated = true;
+  String? _uuid;
 
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   bool get isObfuscated => _isObfuscated;
+  String get uuid => _uuid!;
 
 
 Future<bool> logIn(String email, String password) async{
@@ -38,9 +41,12 @@ Future<bool> signUp(String email, String password) async {
   notifyListeners();
 
   try{
-    await _authServices.signUpWithEmail(email, password);
-    _isLoading = false;
-    notifyListeners();
+    final response = await _authServices.signUpWithEmail(email, password);
+    if(response != null){
+      _uuid = response.user!.id;
+      _isLoading = false;
+      notifyListeners();
+    }
     return true;
   } catch(error) {
     _isLoading = false;
@@ -56,7 +62,7 @@ Future<bool> resetPassword(String email) async{
   notifyListeners();
 
   try{
-    await _authServices.resetPassword(email);
+     await _authServices.resetPassword(email);
     _isLoading = false;
     notifyListeners();
     return true;

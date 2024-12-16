@@ -1,3 +1,5 @@
+import 'package:crud/services/Models/user_model.dart';
+import 'package:crud/services/provider/user_profile_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -50,19 +52,23 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                 ),),
                 const SizedBox(height: 20,),
-                Consumer<AuthProvider>(builder: (context, value, child) => TextButton(
+                Consumer2<AuthProvider, UserProfileProvider>(builder: (context, AuthProvider, UserProfileProvider, child) => TextButton(
                   onPressed: () async {
-                    bool user = await value.signUp(_emailController.text, _passwordController.text);
+                    bool user = await AuthProvider.signUp(_emailController.text, _passwordController.text);
                     if(user){
-                      Navigator.pushReplacementNamed(context, '/login');
+                      print('user signup');
+                         _emailController.clear();
+                         _passwordController.clear();
+                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('User Profile Created Sucessfully')));
+                         Navigator.pushReplacementNamed(context, '/login');
                     }
                     else{
                       ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(value.errorMessage!)));
-                      value.clearError();
+                          SnackBar(content: Text(AuthProvider.errorMessage!)));
+                      AuthProvider.clearError();
                     }
                   },
-                  child: value.isLoading ? CircularProgressIndicator() : Text('Sign Up', style: TextStyle(color: Colors.white),),
+                  child: AuthProvider.isLoading ? CircularProgressIndicator() : Text('Sign Up', style: TextStyle(color: Colors.white),),
                   style: const ButtonStyle(
                     backgroundColor: MaterialStatePropertyAll<Color>(Colors.black),
                   ),

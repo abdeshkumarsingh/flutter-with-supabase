@@ -15,10 +15,11 @@ return await _supabase.auth.signInWithPassword(
 
   //Signup with email
 Future<AuthResponse> signUpWithEmail(String email, String password) async{
-  return await _supabase.auth.signUp(
+  final response = await _supabase.auth.signUp(
       email: email,
       password: password
   );
+  return response;
 }
 
   //Reset password
@@ -38,5 +39,9 @@ String? getCurrentUserEmail() {
   return user?.email;
 }
 
-
+String? getUserId() {
+  final session = _supabase.auth.currentSession;
+  final user = session?.user;
+  return user?.id;
+  }
 }
