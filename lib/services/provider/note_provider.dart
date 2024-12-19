@@ -2,13 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../auth/Note/note.dart';
+import '../../auth/auth_services.dart';
 import '../Models/note_model.dart';
 
 class NoteProvider with ChangeNotifier{
 
-  final _table = Supabase.instance.client.from('crudapp');
-  final userId = Supabase.instance.client.auth.currentUser!.id;
-  final _supabase = Supabase.instance.client;
+  AuthServices _authServices = AuthServices();
   final _note = Note();
   String? _errorMessage;
 
@@ -19,7 +18,8 @@ class NoteProvider with ChangeNotifier{
   void addNote(String content, String note_name){
     _errorMessage = null;
     try{
-      final newNote = NoteModel(content: content, note_name: note_name, user_id: userId);
+      final userId = _authServices.getUserId();
+      final newNote = NoteModel(content: content, note_name: note_name, user_id: userId as String);
       _note.createNote(newNote);
     } on Exception catch(error){
       _errorMessage = error.toString();

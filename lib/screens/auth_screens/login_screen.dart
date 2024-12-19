@@ -3,6 +3,7 @@ import 'package:crud/utils/images.dart';
 import 'package:crud/widgets/auth_textfield/auth_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 
 class LoginScreen extends StatefulWidget {

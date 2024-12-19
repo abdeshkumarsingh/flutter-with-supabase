@@ -4,6 +4,7 @@ import 'package:crud/auth/Note/note.dart';
 import 'package:crud/services/provider/user_profile_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../services/provider/note_provider.dart';
 
@@ -75,8 +76,24 @@ class _HomeScreenState extends State<HomeScreen> {
         return StreamBuilder(stream: database_connection.stream, builder: (context, snapshot) {
           //no data in snapshot
           if(!snapshot.hasData){
-            return const Center(
-              child: CircularProgressIndicator(),
+            return Skeletonizer(
+                child: ListView.builder(
+                  itemCount: 15,
+                  itemBuilder: (context, index) {
+                    return const ListTile(
+                      title: Text('No Notes'),
+                      leading: Icon(Icons.note_outlined),
+                      trailing: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.edit),
+                          Icon(Icons.delete)
+                        ],
+                      ),
+                    );
+                  },
+                ),
             );
           }
           //Snapshot has data

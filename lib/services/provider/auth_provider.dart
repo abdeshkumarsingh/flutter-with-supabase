@@ -23,10 +23,18 @@ Future<bool> logIn(String email, String password) async{
    notifyListeners();
 
    try{
-     await _authServices.signInWithEmail(email, password);
-     _isLoading = false;
-     notifyListeners();
-     return true;
+     final login =await _authServices.signInWithEmail(email, password);
+     if(login.session?.user != null){
+       _isLoading = false;
+       notifyListeners();
+       return true;
+     } else {
+       _isLoading = false;
+       _errorMessage = 'Invalid Credentials';
+       notifyListeners();
+       return false;
+     }
+
    } catch (error) {
      _isLoading = false;
      _errorMessage = error.toString();

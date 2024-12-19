@@ -5,6 +5,8 @@ import 'package:crud/services/provider/user_profile_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../main.dart';
+
 class UserProfileScreen extends StatefulWidget {
   UserModel user;
   UserProfileScreen({super.key, required this.user });
@@ -49,7 +51,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               icon: const Icon(Icons.logout),
               onPressed: (){
                 value.logOut();
-                Navigator.pushNamed(context, '/login');
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const Crudapp()));
               },
             ),
           ),
@@ -69,7 +71,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 }
               },
               child: CircleAvatar(
-                backgroundImage: _isImageNull ? NetworkImage('https://www.pngplay.com/wp-content/uploads/12/User-Avatar-Profile-PNG-Free-File-Download.png') : NetworkImage(widget.user.avatarUrl),
+                backgroundImage: _isImageNull ? NetworkImage('https://bdrnbpzrdmvhfeniuzrn.supabase.co/storage/v1/object/public/profile-images/public/${value.authServices.getUserId()}/${widget.user.avatarUrl}') : NetworkImage('https://www.pngplay.com/wp-content/uploads/12/User-Avatar-Profile-PNG-Free-File-Download.png'),
                 radius: 80,
               ),
             ),
@@ -105,7 +107,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             Consumer<UserProfileProvider>(builder: (context, value, child) => TextButton(
                 onPressed: () async{
                   String name;
-                  final imageUrl;
+                  String imageUrl;
+
                    if(value.isEnabled == true){
                     if(_nameController.text.isEmpty){
                       name = widget.user.fullName;
@@ -113,11 +116,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       name = _nameController.text;
                     }
 
-                   if(value.imagePath != null) {
-                     imageUrl = await value.imageLinkUpdate();
-                   } else {
-                     imageUrl = widget.user.avatarUrl;
-                   }
+                    if(value.imagePath!.isNotEmpty) {
+                      imageUrl = value.imagePath!;
+                    } else {
+                      imageUrl = widget.user.avatarUrl;
+                    }
+
                      value.updateUser(UserModel(id: widget.user.id, email: widget.user.email, fullName: name, avatarUrl: imageUrl, createdAt: DateTime.now()));
                      _nameController.clear();
                      value.setIsEnabled(false);

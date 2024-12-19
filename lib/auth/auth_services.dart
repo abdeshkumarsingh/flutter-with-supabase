@@ -39,4 +39,8 @@ String? getUserId() {
   final user = session?.user;
   return user?.id;
   }
+
+  Future<void> signOut() async{
+    await _supabase.auth.signOut();
+  }
 }

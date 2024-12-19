@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../auth/auth_services.dart';
+
 class UserProfileProvider with ChangeNotifier{
 
   final _userProfile = UserProfile();
@@ -13,7 +15,7 @@ class UserProfileProvider with ChangeNotifier{
   bool _isLoading = false;
   bool _isEnabled = false;
   final ImagePicker _picker = ImagePicker();
-  final String userId = Supabase.instance.client.auth.currentUser!.id;
+  AuthServices _authServices = AuthServices();
   String? _imagePath;
   final SupabaseClient _supabase = Supabase.instance.client;
 
@@ -23,6 +25,7 @@ class UserProfileProvider with ChangeNotifier{
   bool get isLoading => _isLoading;
   bool get isEnabled => _isEnabled;
   String? get imagePath => _imagePath;
+  AuthServices get authServices => _authServices;
 
   void resetError(){
     _errorMessage = null;
@@ -79,15 +82,19 @@ class UserProfileProvider with ChangeNotifier{
     }
   }
 
-  Future<String> imageLinkUpdate() async{
-    if(_imagePath == null){
-      throw Exception('No Image Uploaded');
-    }
-    final imageUrl = await _supabase.storage.from('profile-images').createSignedUrl('public/$userId/$_imagePath', 60 * 60 * 24 * 365);
-    _imagePath = null;
-    return imageUrl;
-  }
+  // Future<String> imageLinkUpdate() async{
+  //   if(_imagePath == null){
+  //     throw Exception('No Image Uploaded');
+  //   }
+  //   final userId = _authServices.getUserId();
+  //   final imageUrl = await _supabase.storage.from('profile-images').createSignedUrl('public/$userId/$_imagePath', 60 * 60 * 24 * 365);
+  //   _imagePath = null;
+  //   return imageUrl;
+  // }
+
   void logOut(){
+    Supabase.instance.client.auth.refreshSession();
     Supabase.instance.client.auth.signOut();
+    notifyListeners();
   }
 }

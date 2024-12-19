@@ -3,10 +3,12 @@ import 'dart:io';
 import 'package:crud/services/Models/user_model.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../auth_services.dart';
+
 class UserProfile {
 
   final SupabaseClient _supabase = Supabase.instance.client;
-  final String userId = Supabase.instance.client.auth.currentUser!.id;
+  final _authServices = AuthServices();
 
   Future<UserModel> fetchProfile() async {
     try{
@@ -19,11 +21,11 @@ class UserProfile {
   }
 
   Future<void> updateProfile(UserModel user) async{
-    if(userId.isEmpty){
+    if(_authServices.getUserId()!.isEmpty){
       throw Exception('No User Logged in.');
     }
     try{
-      await _supabase.from('users').update(user.toJson()).eq('id', userId);
+      await _supabase.from('users').update(user.toJson()).eq('id', _authServices.getUserId() as Object);
     } on PostgrestException catch(error){
       throw Exception(error.message);
     }
@@ -32,7 +34,7 @@ class UserProfile {
   Future<bool> updateAvatar(File file) async{
     try{
       final fileName = file.path.split('/').last;
-      final upload = await _supabase.storage.from('profile-images').upload('public/$userId/$fileName', file);
+      final upload = await _supabase.storage.from('profile-images').upload('public/${_authServices.getUserId()}/$fileName', file);
       return true;
     } on PostgrestException catch(error){
       throw Exception(error.message);
